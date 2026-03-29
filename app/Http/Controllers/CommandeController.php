@@ -55,8 +55,14 @@ class CommandeController extends Controller
 
         $commande->update(['total' => $total]);
 
+        // Email de confirmation au client
         try {
             Mail::to($commande->user->email)->send(new CommandeConfirmation($commande));
+        } catch (\Exception $e) {}
+
+        // Notification au gestionnaire
+        try {
+            Mail::to('fayendeyembengue9@gmail.com')->send(new CommandeConfirmation($commande));
         } catch (\Exception $e) {}
 
         return redirect()->route('commandes.index')->with('success', 'Commande passée avec succès !');
@@ -69,6 +75,7 @@ class CommandeController extends Controller
 
         $commande->update(['statut' => $request->statut]);
 
+        // Envoi facture PDF si commande prête
         if ($request->statut === 'prete') {
             try {
                 $pdf = Pdf::loadView('pdf.facture', compact('commande'));
