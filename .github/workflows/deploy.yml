@@ -1,0 +1,30 @@
+name: ISI BURGER CI/CD
+
+on:
+  push:
+    branches: [ Faye_Maya_burger ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull du code
+        uses: actions/checkout@v3
+
+      - name: Installation PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Installation des dépendances Laravel
+        run: composer install --optimize-autoloader --no-dev
+
+      - name: Copier .env
+        run: cp .env.example .env
+
+      - name: Générer la clé
+        run: php artisan key:generate
+
+      - name: Build image Docker
+        run: docker build -t isi-burger .
