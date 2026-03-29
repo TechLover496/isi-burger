@@ -18,10 +18,29 @@ class StatistiqueController extends Controller
             ->whereYear('created_at', date('Y'))
             ->groupBy('mois')->orderBy('mois')->get();
 
+        $dataPaye = Commande::select(DB::raw('MONTH(created_at) as mois'), DB::raw('COUNT(*) as total'))
+            ->whereYear('created_at', date('Y'))
+            ->where('statut', 'payee')
+            ->groupBy('mois')->orderBy('mois')->get();
+
         $mois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
         $commandesParMois = array_fill(0, 12, 0);
-        foreach ($data as $d) { $commandesParMois[$d->mois - 1] = $d->total; }
+        $commandesPayeesParMois = array_fill(0, 12, 0);
 
-        return view('statistiques.index', compact('commandesJour','commandesValidees','recetteJour','totalProduits','mois','commandesParMois'));
+        foreach ($data as $d) { $commandesParMois[$d->mois - 1] = $d->total; }
+        foreach ($dataPaye as $d) { $commandesPayeesParMois[$d->mois - 1] = $d->total; }
+
+        $produits = Produit::where('archive', false)->get();
+        $categoriesLabels = ['En stock', 'Rupture de stock'];
+        $categoriesData = [
+            $produits->where('stock', '>', 0)->count(),
+            $produits->where('stock', 0)->count(),
+        ];
+
+        return view('statistiques.index', compact(
+            'commandesJour', 'commandesValidees', 'recetteJour',
+            'totalProduits', 'mois', 'commandesParMois', 'commandesPayeesParMois',
+            'categoriesLabels', 'categoriesData'
+        ));
     }
 }

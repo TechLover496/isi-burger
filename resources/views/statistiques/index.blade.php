@@ -8,6 +8,7 @@
         .stat-icon { font-size: 28px; margin-bottom: 12px; }
         .stat-val { font-size: 28px; font-weight: 800; color: #C1440E; margin-bottom: 4px; }
         .stat-lbl { font-size: 13px; color: #aaa; }
+        .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .chart-card { background: #fff; border-radius: 16px; padding: 28px; border: 1px solid #F0EDE8; }
         .chart-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: #1a1a1a; }
     </style>
@@ -38,9 +39,15 @@
         </div>
     </div>
 
-    <div class="chart-card">
-        <div class="chart-title">Commandes par mois</div>
-        <canvas id="chartCommandes" height="100"></canvas>
+    <div class="charts">
+        <div class="chart-card">
+            <div class="chart-title">Commandes par mois</div>
+            <canvas id="chartCommandes" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Produits par catégorie</div>
+            <canvas id="chartProduits" height="200"></canvas>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -49,16 +56,51 @@
             type: 'bar',
             data: {
                 labels: {!! json_encode($mois) !!},
+                datasets: [
+                    {
+                        label: 'Total commandes',
+                        data: {!! json_encode($commandesParMois) !!},
+                        backgroundColor: '#F5A58A',
+                        borderRadius: 8,
+                    },
+                    {
+                        label: 'Commandes payées',
+                        data: {!! json_encode($commandesPayeesParMois) !!},
+                        backgroundColor: '#C1440E',
+                        borderRadius: 8,
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: { padding: 20, font: { size: 13 } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#F0EDE8' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('chartProduits'), {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($categoriesLabels) !!},
                 datasets: [{
-                    label: 'Commandes',
-                    data: {!! json_encode($commandesParMois) !!},
-                    backgroundColor: '#C1440E',
-                    borderRadius: 8,
+                    data: {!! json_encode($categoriesData) !!},
+                    backgroundColor: ['#C1440E', '#F5A58A'],
+                    borderWidth: 0,
                 }]
             },
             options: {
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: '#F0EDE8' } }, x: { grid: { display: false } } }
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, font: { size: 13 } } }
+                },
+                cutout: '65%'
             }
         });
     </script>

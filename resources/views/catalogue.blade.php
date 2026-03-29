@@ -37,8 +37,8 @@
         .card { background: #fff; border-radius: 16px; border: 2px solid #F0EDE8; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; cursor: pointer; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(193,68,14,0.08); border-color: #f5c9b8; }
         .card.selected { border-color: #C1440E; box-shadow: 0 8px 24px rgba(193,68,14,0.15); }
-        .card-img { background: #FFF0EB; text-align: center; font-size: 60px; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        .card-img img { width: 100%; height: 200px; object-fit: contain; background: #FFF0EB; }
+        .card-img { background: #fff; text-align: center; font-size: 60px; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .card-img img { width: 100%; height: 200px; object-fit: contain; background: #fff; }
         .card-selected-badge { position: absolute; top: 10px; right: 10px; background: #C1440E; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
         .card.selected .card-selected-badge { display: flex; }
         .card-body { padding: 16px; }
